@@ -1,6 +1,4 @@
-[Watch Here!]()
-
-[![Video]](https://youtu.be/BHJpKFnpUOA?si=ftnYeBkPqqVSxUYk)
+# [Watch Here!](https://youtu.be/BHJpKFnpUOA?si=ftnYeBkPqqVSxUYk)
 
 # How to run
 
