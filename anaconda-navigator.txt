@@ -1,0 +1,84 @@
+conda installation 64bit
+-------------------
+if you download default conda, it's 64bit, 32 bit can be found in conda archives
+
+$curl -O https://repo.anaconda.com/archive/Anaconda3-2024.02-1-Linux-x86_64.sh
+$bash ~/Downloads/Anaconda3-2024.02-1-Linux-x86_64.sh
+$yes
+$yes
+$source /home/<USER>/anaconda3/bin/activate
+$conda init
+$source ~/.bashrc
+
+$anaconda-navigator (pop-up, it worked)
+________________________________________________________________________________
+
+create conda env for python2.7(64 bit) 
+--------------------------------------
+$conda create -n pepper python=2.7
+$conda activate pepper
+
+______________________________________________________________________________
+
+check python bit-version
+-----------------------
+$python --version
+$python
+$import platform
+$platform.architecture()[0]
+____________________________________________________________________________
+
+naoqi sdk and pynaoqi installation(http://wiki.ros.org/nao/Tutorials/Installation)
+------------------------------------
+$ mkdir ~/naoqi
+$ cd ~/naoqi
+
+$ wget https://community-static.aldebaran.com/resources/2.1.4.13/sdk-c%2B%2B/naoqi-sdk-2.1.4.13-linux64.tar.gz
+
+$ wget https://community-static.aldebaran.com/resources/2.1.4.13/sdk-python/pynaoqi-python2.7-2.1.4.13-linux64.tar.gz # if you are using 64-bit
+
+$tar xzf naoqi-sdk-2.1.4.13-linux64.tar.gz
+
+$tar xzf pynaoqi-python2.7-2.1.4.13-linux64.tar.gz 
+
+$ ~/naoqi/naoqi-sdk-2.1.4.13-linux64/naoqi
+
+____________________________________________________
+
+Add pynaoqi in conda pythonpath:
+--------------------------------
+
+$conda develop ~/naoqi/pynaoqi-python2.7-2.1.4.13-linux64
+
+$ cat ~/anaconda3/envs/pepper/lib/python2.7/site-packages/conda.pth
+	it will show ==> '/home/cmpuser1/naoqi/pynaoqi-python2.7-2.1.4.13-linux64/'
+
+_____________________________________________________________________________
+
+add both naoqisdk and pynaoqi in ~/.bashrc, as below:
+
+$code ~/.bashrc
+
+if [ -n "$CONDA_PREFIX" ]; then
+    if [ -n "$CONDA_PREFIX" ]; then
+    export LD_LIBRARY_PATH=/home/cmpuser1/naoqi/pynaoqi-python2.7-2.1.4.13-linux64:/home/cmpuser1/naoqi/naoqi-sdk-2.1.4.13-linux64/lib:$LD_LIBRARY_PATH
+fi
+
+$ souce activate ~/.bashrc
+_____________________________________________________________________
+
+test pynoaqi
+-------------
+
+$ conda activate pepper
+
+$ python
+$ from naoqi import ALProxy 
+
+
+
+	
+
+
+
+
