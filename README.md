@@ -1,5 +1,8 @@
 # [Watch Here!](https://youtu.be/BHJpKFnpUOA?si=ftnYeBkPqqVSxUYk)
 
+# Setup
+setup as in `README.txt`
+
 # How to run
 
 first, open terminal with `Ctl+Alt+t`
