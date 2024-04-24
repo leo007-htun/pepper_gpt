@@ -3,9 +3,11 @@
 # Setup
 setup as in 
 
-`requirement.txt` by  `pip install -r requirements.txt`
+`requirement.txt` by  
 
-`README.txt`
+    pip install -r requirements.txt
+
+and follow steps in `README.txt`
 
 # How to run
 
