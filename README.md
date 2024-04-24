@@ -1,7 +1,11 @@
 # [Watch Here!](https://youtu.be/BHJpKFnpUOA?si=ftnYeBkPqqVSxUYk)
 
 # Setup
-setup as in `README.txt`
+setup as in 
+
+`requirement.txt` by  `pip install -r requirements.txt`
+
+`README.txt`
 
 # How to run
 
