@@ -1,3 +1,5 @@
+[Watch Here!(]https://youtu.be/BHJpKFnpUOA?si=ftnYeBkPqqVSxUYk)
+
 # How to run
 
 first, open terminal with `Ctl+Alt+t`
@@ -15,3 +17,5 @@ run `python module_receiver.py`
 third, open another terminal again,
 
 run `./march_gpt2.sh`
+
+
