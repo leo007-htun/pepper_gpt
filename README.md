@@ -1,0 +1,17 @@
+# How to run
+
+first, open terminal with `Ctl+Alt+t`
+
+you need to loginto pepper with its IP, press its chest button and it will speak out the IP,
+
+login with `ssh nao@ IP `
+
+copy module_speechrecognition.py in pepper (use choregraphe, it's easier)
+
+Second, open another terminal,
+
+run `python module_receiver.py`
+
+third, open another terminal again,
+
+run `./march_gpt2.sh`
