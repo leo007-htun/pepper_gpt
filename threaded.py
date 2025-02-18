@@ -1,17 +1,9 @@
-
-
 #-*- coding: utf-8 -*-
 
 ###########################################################
-# Retrieve robot audio buffer and do google speech recognition
-#
-# Syntax:
-#    python scriptname --pip <ip> --pport <port>
-#
-#    --pip <ip>: specify the ip of your robot (without specification it will use the NAO_IP defined below)
-#
-# Author: Johannes Bramauer, Vienna University of Technology
-# Created: May 30, 2018
+
+# Author: Sithu Ye Htun, LJMU
+# Created: 29.8.23
 # License: MIT
 #
 ###########################################################
@@ -19,7 +11,7 @@ import socket
 
 from raw_to_wav import rawToWav
 
-NAO_IP = "10.50.20.57" # default, for running on Pepper
+NAO_IP = "10.24.63.72" # default, for running on Pepper
 NAO_PORT = 9559
 
 from optparse import OptionParser
@@ -32,7 +24,8 @@ from naoqi import ALProxy
 from google import Recognizer, UnknownValueError, RequestError
 from numpy import sqrt, mean, square
 import traceback
-import threading 
+import threading
+import os 
 
 
 RECORDING_DURATION = 15     # seconds, maximum recording time, also default value for startRecording(), Google Speech API only accepts up to about 10-15 seconds
@@ -41,13 +34,13 @@ IDLE_RELEASE_TIME = 1.5     # seconds, for auto-detect mode: idle time (RMS belo
 HOLD_TIME = 1.5             # seconds, minimum recording time after we started recording (autodetection)
 SAMPLE_RATE = 48000         # Hz, be careful changing this, both google and Naoqi have requirements!
 
-CALIBRATION_DURATION = 3    # seconds, timespan during which calibration is performed (summing up RMS values and calculating mean)
-CALIBRATION_THRESHOLD_FACTOR = 2.15  # 1.5 factor the calculated mean RMS gets multiplied by to determine the auto detection threshold (after calibration)
+CALIBRATION_DURATION = 4    # 3 seconds, timespan during which calibration is performed (summing up RMS values and calculating mean)
+CALIBRATION_THRESHOLD_FACTOR = 1.5  # 2.15 factor the calculated mean RMS gets multiplied by to determine the auto detection threshold (after calibration)
 
 DEFAULT_LANGUAGE = "en-GB"  # RFC5646 language tag, e.g. "en-us", "de-de", "fr-fr",... <http://stackoverflow.com/a/14302134>
 
-WRITE_WAV_FILE = False      # write the recorded audio to "out.wav" before sending it to google. intended for debugging purposes
-PRINT_RMS = False           # prints the calculated RMS value to the console, useful for setting the threshold
+WRITE_WAV_FILE = True     # write the recorded audio to "out.wav" before sending it to google. intended for debugging purposes
+PRINT_RMS = True           # prints the calculated RMS value to the console, useful for setting the threshold
 
 PREBUFFER_WHEN_STOP = False # Fills pre-buffer with last samples when stopping recording. WARNING: has performance issues!
 
@@ -71,7 +64,13 @@ class SpeechRecognitionModule(naoqi.ALModule):
             self.memory = naoqi.ALProxy("ALMemory")
             self.memory.declareEvent("SpeechRecognition")
             self.behavior = naoqi.ALProxy("ALBehaviorManager")
-            self.tts = naoqi.ALProxy("ALTextToSpeech")
+	    self.music = naoqi.ALProxy("ALAudioPlayer")
+	    self.audio = naoqi.ALProxy("ALAudioDevice")
+	    self.tts = naoqi.ALProxy("ALTextToSpeech")
+	    self.capture = naoqi.ALProxy("ALPhotoCapture")
+            self.img_show = naoqi.ALProxy("ALTabletService")
+	    self.img_show.showImageNoCache("http://198.18.0.1/apps/pepper_behaviors-f1daf1/suit.png") 
+
 
             # flag to indicate if subscribed to audio events
             self.isStarted = False
@@ -83,10 +82,10 @@ class SpeechRecognitionModule(naoqi.ALModule):
 
             # flag to indicate if auto speech detection is enabled
             self.isAutoDetectionEnabled = True
-            self.autoDetectionThreshold = 0.001 # adjust ambient noise lvl here, rmsMicFront receives value greater than self.autoDetectionThreshold it will start recording
+            self.autoDetectionThreshold = 0.5 #0.0001 adjust ambient noise lvl here, rmsMicFront receives value greater than self.autoDetectionThreshold it will start recording
 
             # flag to indicate if we are calibrating
-            self.isCalibrating = False
+            self.isCalibrating = True
             self.startCalibrationTimestamp = 0
 
             # RMS calculation variables
@@ -131,6 +130,8 @@ class SpeechRecognitionModule(naoqi.ALModule):
         nDeinterleave = 0
         audio.setClientPreferences( self.getName(),  SAMPLE_RATE, nNbrChannelFlag, nDeinterleave ) # setting same as default generate a bug !?!
         audio.subscribe( self.getName() )
+	#a = self.getName()
+	#print('getName : ', a )
 
 	        # Play the blip sound
         au = session.service("ALAudioPlayer")
@@ -218,7 +219,7 @@ class SpeechRecognitionModule(naoqi.ALModule):
             if( False ):
                 # compute peak
                 aPeakValue = np.max( aSoundData )
-                if( aPeakValue > 16000 ):
+                if( aPeakValue > 8000 ):#16000
                     print( "Peak: %s" % aPeakValue )
 
             if(not self.isCalibrating):
@@ -381,7 +382,7 @@ class SpeechRecognitionModule(naoqi.ALModule):
 
         # from the naoqi sample, but rewritten to use numpy methods instead of for loops
 
-        lsb = data[0::2]out
+        lsb = data[0::2]
         msb = data[1::2]
 
         # don't remove the .0, otherwise overflow!
@@ -404,7 +405,7 @@ class SpeechRecognitionModule(naoqi.ALModule):
         if (WRITE_WAV_FILE):
             # write to file
             filename = "out" + str(self.fileCounter)
-            self.fileCounter += 1
+            #self.fileCounter += 1
             outfile = open(filename + ".raw", "wb")
             data.tofile(outfile)
             outfile.close()
@@ -420,14 +421,58 @@ class SpeechRecognitionModule(naoqi.ALModule):
             result = r.recognize_google(audio_data=buffer, samplerate=SAMPLE_RATE, language=self.language)
             self.memory.raiseEvent("SpeechRecognition", result)
             print 'RESULT: ' + result
+
             if 'dance' in result.lower():
                 print('Dancing ...')
-                self.tts.say('Alrighty, watch my moves.')
-                self.behavior.startBehavior('.lastUploadedChoregrapheBehavior/jazz_behavior')
-            return result
+		time.sleep(6)
+                self.behavior.startBehavior('pepper_behaviors-f1daf1/jazz')
+           
 
+	    elif 'music' in result.lower() or 'song' in result.lower():
+	        print('playing music ...')
+		time.sleep(6)
+		self.music.playFile("/home/nao/pepperspeechrecognition-master/jingle.wav")
+
+	    elif 'play' in result.lower() and 'game' in result.lower():
+		self.tts.say("Let's play tic tac toe")
+		self.img_show.showWebview("https://playtictactoe.org")
+
+	    elif 'yes' in result.lower():
+	        self.img_show.showImageNoCache("http://198.18.0.1/apps/pepper_behaviors-f1daf1/suit.png") 
+
+
+	    elif 'take' in result.lower() and 'picture' in result.lower():
+
+		self.img_show.hideImage()
+		
+	        self.tts.say("Please stand infront of me")
+		print('taking picture ...')
+		time.sleep(5)	
+		self.capture.setResolution(2)
+		self.capture.setPictureFormat("jpg")
+		self.tts.say("Taking picture now, say cheese")
+		self.capture.takePictures(1, "/home/nao/.local/share/PackageManager/apps/pepper_behaviors-f1daf1/html", "image", True)
+		time.sleep(3)
+
+		self.behavior.startBehavior('pepper_behaviors-f1daf1/capture')
+		time.sleep(5)
+
+
+
+		#self.capture.takePictures(1, "/home/nao/.local/share/PackageManager/apps/pepper_behaviors-f1daf1/html", "image", True)
+		#self.behavior.startBehavior('pepper_behaviors-f1daf1/capture')
+	        self.img_show.showImageNoCache("http://198.18.0.1/apps/pepper_behaviors-f1daf1/image.jpg")
+		#time.sleep(10)
+		self.audio.unsubscribe(self.getName())
+		self.tts.say("Do you like your photo?, say 'yes' if you enjoy my photography skills")
+		self.audio.subscribe(self.getName())
+		
+	   
+		
+		
 	    return result
-        except UnknownValueError:
+	
+	except UnknownValueError:
             print 'ERR: Recognition error'
 	    result = ''
 	    print(result)
@@ -482,15 +527,15 @@ class RobotNavigation:
         target = self.tracker_service.isTargetLost()
 
         if target == False:
-            print(target, 'Target in sight ...')
+            #print(target, 'Target in sight ...')
             time.sleep(1)
             self.tracker_service.stopTracker()
-            print('\nmoving Xaxis')
+           #print('\nmoving Xaxis')
             theta = 0.1 #math.pi/24
             self.follow.moveTo(5.0, 0.0, theta) # Returns:True if the moveTo terminated successfully, False if it was interrupted.
 
         elif target == True:
-            print(target, 'Target lost ... Navigating ...')
+            #print(target, 'Target lost ... Navigating ...')
             self.navigationProxy.navigateTo(0.5, 0.2, [["SpeedFactor", 0.6]])
             
 
@@ -556,8 +601,6 @@ def main():
     # creating threads
     # creating threads
     t = threading.Thread(target=Robotnav_loop)
-
-    #create thread to run VisionLLM, but stop GPT at the same time, especially pepper_feedback.py
 
     # start threads
     t.start()
