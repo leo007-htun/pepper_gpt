@@ -431,7 +431,7 @@ class SpeechRecognitionModule(naoqi.ALModule):
 	    elif 'music' in result.lower() or 'song' in result.lower():
 	        print('playing music ...')
 		time.sleep(6)
-		self.music.playFile("/home/nao/pepperspeechrecognition-master/jingle.wav")
+		self.music.playFile("/home/nao/pepper_gpt/jingle.wav")
 
 	    elif 'play' in result.lower() and 'game' in result.lower():
 		self.tts.say("Let's play tic tac toe")
