@@ -14,15 +14,18 @@ while true; do
 
     elif grep -q "play" "$filename"; then
         echo -e "\n$filename contains 'take' and 'picture', skipping GPT...\n"
-        python music.py
+        #python music.py
 
-        conda activate pepper
+        #conda activate pepper
 
-        python tablet.py
+        #python tablet.py
 
-        conda deactivate
-
+        #conda deactivate
+    elif grep -q "dance" "$filename"; then
+        echo -e "\n$filename contains 'dance', skipping GPT...\n"
     else
+
+    	conda activate
 
         echo -e "\nRunning GPT..."
         python march_gpt.py
