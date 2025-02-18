@@ -1,16 +1,11 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 
 ###########################################################
-# This module receives results from the speechrecognition module and prints to console
-#
-# Syntax:
-#    python scriptname --pip <ip> --pport <port>
-#
-#    --pip <ip>: specify the ip of your robot (without specification it will use the NAO_IP defined below
-#
-# Author: Johannes Bramauer, Vienna University of Technology
-# Created: May 30, 2018
+
+# Author: Sithu Ye Htun, LJMU
+# Created: 29.8.23
 # License: MIT
+#
 ###########################################################
 
 # NAO_PORT = 65445 # Virtual Machine
