@@ -32,7 +32,7 @@ $ cd
 run python threaded.py
 
 
-Second, open another terminal,
+Second, open another terminal in ur local PC,
 
 run `python module_receiver.py`
 
