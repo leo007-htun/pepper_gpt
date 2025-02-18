@@ -17,7 +17,7 @@ you need to loginto pepper with its IP, press its chest button and it will speak
 
 login with `ssh nao@ IP `
 
-copy threaded.py, google.py and raw_to_wav.py in pepper (use choregraphe, it's easier)
+copy pepper_gpt/ in pepper (use choregraphe, it's easier)
 
 run python threaded.py
 
