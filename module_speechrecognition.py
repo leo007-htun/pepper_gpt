@@ -1,17 +1,9 @@
-#
-
 #-*- coding: utf-8 -*-
 
 ###########################################################
-# Retrieve robot audio buffer and do google speech recognition
-#
-# Syntax:
-#    python scriptname --pip <ip> --pport <port>
-#
-#    --pip <ip>: specify the ip of your robot (without specification it will use the NAO_IP defined below)
-#
-# Author: Johannes Bramauer, Vienna University of Technology
-# Created: May 30, 2018
+
+# Author: Sithu Ye Htun, LJMU
+# Created: 29.8.23
 # License: MIT
 #
 ###########################################################
