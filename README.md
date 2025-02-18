@@ -22,11 +22,15 @@ copy pepper_gpt/ in pepper (use choregraphe, it's easier)
 open terminal, 
 
 $ cd pepper_gpt/
+
 $ unzip pepper_behaviors-f1daf1
+
 $ mv pepper_behaviors-f1daf1 /home/nao/.local/share/PackageManager/apps/
+
 $ cd
 
 run python threaded.py
+
 
 Second, open another terminal,
 
