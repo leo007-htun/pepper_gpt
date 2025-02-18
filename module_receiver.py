@@ -18,7 +18,7 @@ NAO_PORT = 9559 # Robot
 
 
 # NAO_IP = "127.0.0.1" # Virtual Machine
-NAO_IP = "10.24.63.72" # Pepper default
+NAO_IP = "10.50.20.179" # Pepper default
 PORT = 5567
 
 from optparse import OptionParser
